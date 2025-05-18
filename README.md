@@ -128,7 +128,7 @@ To ensure consistency and avoid race conditions when multiple users place bids a
   - **DECISION:** Due to high CPU utilization & need of implementing a retry mechanism for large number of rolled back transactions (not handled by typeorm), this design was discarded.
 
 - **Read Committed Transactions with Pessimistic Write Lock on Item:**
-  - Set `READ_COMMITTED` isolation level on transactions to ensure transactions read only committed data for validating that the highest bid and auction time.
+  - Set `READ_COMMITTED` isolation level on transactions to ensure transactions read only committed data for validating the current bid against the highest bid and auction time.
   - Acquire a **pessimistic_write lock** on the respective `Item` row during bid placement.
   - Ensures only one bid transaction can be processed at a time per item.
   - Other transactions concerned with the same item will wait for the lock to be released.
