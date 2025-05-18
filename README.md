@@ -129,7 +129,7 @@ To ensure consistency and avoid race conditions when multiple users place bids a
 
 - **Read Committed Transactions with Pessimistic Write Lock on Item:**
   - Set `READ_COMMITTED` isolation level on transactions to ensure transactions read only committed data for validating the current bid against the highest bid and auction time.
-  - Acquire a **pessimistic_write lock** on the respective `Item` row during bid placement.
+  - Acquire a `pessimistic_write` lock on the respective `Item` row during bid placement.
   - Ensures only one bid transaction can be processed at a time per item.
   - Other transactions concerned with the same item will wait for the lock to be released.
   - **DECISION:** This strategy allows bids to be placed on DIFFERENT items simultaneously and reduces the chances of rollbacks. It also minimizes CPU utilization by making the transactions wait for the lock to be released instead of executing them optimistically. Due to reduced chances of conflicts, we also don't need to implement a retry mechanism for V1.
