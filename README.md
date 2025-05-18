@@ -132,7 +132,7 @@ To ensure consistency and avoid race conditions when multiple users place bids a
   - Acquire a `pessimistic_write` lock on the respective `Item` row during bid placement.
   - Ensures only one bid transaction can be processed at a time per item.
   - Other transactions concerned with the same item will wait for the lock to be released.
-  - **DECISION:** This strategy allows bids to be placed on DIFFERENT items simultaneously and reduces the chances of rollbacks. It also minimizes CPU utilization by making the transactions wait for the lock to be released instead of executing them optimistically. Due to reduced chances of conflicts, we also don't need to implement a retry mechanism for V1.
+  - **DECISION:** This strategy allows bids to be placed on DIFFERENT items simultaneously and reduces the chances of rollbacks. It also minimizes CPU utilization by making the transactions wait for the lock to be released instead of executing them optimistically. Due to reduced chances of conflicts, we also don't need to implement a retry mechanism for MVP.
 
 ---
 
@@ -151,6 +151,6 @@ To push updates to all users about the latest-bid placed in real time:
   - Expose a SSE end-point to the client-side which looks up the `bid` table for the latest bid on an item and streams it to the client-side.
   - Create a composite index on `bid(itemID, time)` to make these look ups lightning fast.
   - The polling interval can be made configurable using .env variables.
-  - **DECISION:** For a bidding system with 100 users and allowing the user to place a bid on one item at a time only, we can expect 100 bids per item per second as the worst case, which doesn't create that great of an overhead for the DB to update the bid table and the composite index table. And the minimal setup effort of exposing only an SSE end-point makes this strategy the best for V1.
+  - **DECISION:** For a bidding system with 100 users and allowing the user to place a bid on one item at a time only, we can expect 100 bids per item per second as the worst case, which doesn't create that great of an overhead for the DB to update the bid table and the composite index table. And the minimal setup effort of exposing only an SSE end-point makes this strategy the best for MVP.
 
 ---
