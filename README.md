@@ -113,7 +113,7 @@ npm run dev
 
 To ensure consistency and avoid race conditions when multiple users place bids at the same time:
 
-#### 💡 Ideas:
+### 💡 Ideas:
 - **Message Queue:**
   - Integrate a message queue where each bid is placed with its epoch timestamp by client-side. 
   - These bids will be eventually be consumed by the backend at its own leisure to minimize CPU utilization (e.g. chunk_size=100).
@@ -134,10 +134,21 @@ To ensure consistency and avoid race conditions when multiple users place bids a
   - Other transactions concerned with the same item will wait for the lock to be released.
   - **DECISION:** This strategy allows bids to be placed on DIFFERENT items simultaneously and reduces the chances of rollbacks. It also minimizes CPU utilization by making the transactions wait for the lock to be released instead of executing them optimistically. Due to reduced chances of conflicts, we also don't need to implement a retry mechanism for V1.
 
-<!-- ## 🔄 Real-Time Bid Updates
+## 🔄 Real-Time Bid Updates
 
-- Implemented using **Server-Sent Events (SSE)**
-- Frontend keeps an open connection to receive latest bid updates for individual auctions
-- Backend publishes latest bids on the SSE stream whenever a new valid bid is placed
+To push updates to all users about the latest-bid placed in real time:
 
---- -->
+### 💡 Ideas:
+- **Pub/Sub Queue:**
+  - Integrate a pub/sub or stream queue like MQTT or Redis Pub/Sub or Streams.
+  - Server pushes latest bid against each item after committing new bids.
+  - Client subscribes to the relevant topic and pulls latest bid information on every new message.
+  - **DECISION:** Redis Pub/Sub and Streams works best for microservices and for client to listen into these messages, an SSE end-point needs to exposed which streams the new messages. And though MQTT is a reliable, lightweight and persistent queue, it still needs to be used via third-party libraries like Eclipse Mosquitto which requires more setup effort than redis. For a small system with 100 users, this architecture is an overkill but can be planned as a scaling activity in the future. 
+
+- **Server-Sent Events (SSE) with Fast DB Lookup:**
+  - Expose a SSE end-point to the client-side which looks up the `bid` table for the latest bid on an item and streams it to the client-side.
+  - Create a composite index on `bid(itemID, time)` to make these look ups lightning fast.
+  - The polling interval can be made configurable using .env variables.
+  - **DECISION:** For a bidding system with 100 users and allowing the user to place a bid on one item at a time only, we can expect 100 bid requests per item per second as the worst case, which doesn't create that great of an overhead for the DB to update the bid table and the composite index table. And the minimal setup effort of exposing only an SSE end-point makes this strategy the best for V1.
+
+---
