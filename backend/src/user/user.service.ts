@@ -13,7 +13,7 @@ export class UserService {
   ) {}
 
   async findAll() {
-    return await this.userRepository.findAndCount({
+    return await this.userRepository.find({
       select: { id: true, name: true },
     });
   }

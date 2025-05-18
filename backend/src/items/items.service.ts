@@ -17,7 +17,7 @@ export class ItemsService {
   }
 
   async findAll() {
-    return await this.itemRepository.findAndCount();
+    return await this.itemRepository.find({ select: { id: true } });
   }
 
   async findOne(id: string) {

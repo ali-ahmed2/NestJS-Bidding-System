@@ -5,12 +5,14 @@ import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
+@Index(['itemID', 'time'], { unique: false })
 export class Bid extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

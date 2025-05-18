@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Sse, Param } from '@nestjs/common';
 import { BidService } from './bid.service';
 import { CreateBidDto } from './dto/create-bid.dto';
 
@@ -9,21 +9,11 @@ export class BidController {
   @Post()
   async create(@Body() createBidDto: CreateBidDto) {
     await this.bidService.create(createBidDto);
-    return 'Your bid has been placed successfully!';
+    return { message: 'Your bid has been placed successfully!' };
   }
 
-  @Get()
-  async findAll() {
-    return await this.bidService.findAll();
+  @Sse(':itemID/latest-bid')
+  steamLatestBid(@Param('itemID') itemID: string) {
+    return this.bidService.StreamLatestBid(itemID);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.bidService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateBidDto: UpdateBidDto) {
-  //   return this.bidService.update(+id, updateBidDto);
-  // }
 }

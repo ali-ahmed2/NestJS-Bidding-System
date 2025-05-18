@@ -15,6 +15,7 @@ const config: DataSourceOptions = {
   migrations: ['dist/migrations/*{.ts,.js}'],
   migrationsRun: true,
   synchronize: false,
+  timezone: 'Z',
 };
 
 export default registerAs('typeorm', () => config);

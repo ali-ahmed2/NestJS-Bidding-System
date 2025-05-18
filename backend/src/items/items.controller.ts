@@ -10,7 +10,7 @@ export class ItemsController {
   @Post()
   async create(@Body() createItemDto: CreateItemDto) {
     await this.itemsService.create(createItemDto);
-    return 'A new item has been created successfully!';
+    return { message: 'A new item has been created successfully!' };
   }
 
   @Get()
