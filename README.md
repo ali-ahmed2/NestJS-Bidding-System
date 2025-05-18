@@ -145,7 +145,7 @@ To push updates to all users about the latest-bid placed in real time:
   - Integrate a pub/sub or stream queue like MQTT or Redis Pub/Sub or Streams.
   - Server pushes latest bid against each item after committing new bids.
   - Client subscribes to the relevant topic and pulls latest bid information on every new message.
-  - **DECISION:** Redis Pub/Sub and Streams works best for microservices and for client to listen into these messages, an SSE end-point needs to exposed which streams the new messages. And though MQTT is a reliable, lightweight and persistent queue, it still needs to be used via third-party libraries like Eclipse Mosquitto which requires more setup effort than redis. For a small system with 100 users, this architecture is an overkill but can be planned as a scaling activity in the future. 
+  - **DECISION:** Redis Pub/Sub and Streams works best for communication among microservices. And for client to listen into these messages, an SSE end-point needs to exposed which streams the new messages from the queue/stream. Though MQTT is a reliable, lightweight and persistent queue, it still needs to be used via third-party libraries like Eclipse Mosquitto which requires more setup effort than redis. For a small system with 100 users, this architecture is an overkill but can be planned as a scaling activity in the future. 
 
 - **Server-Sent Events (SSE) with Fast DB Lookup:**
   - Expose a SSE end-point to the client-side which looks up the `bid` table for the latest bid on an item and streams it to the client-side.
