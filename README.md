@@ -80,17 +80,33 @@ A real-time auction platform where users can place bids on items and view live u
 ---
 
 
-<!-- ## 🧠 Concurrency Handling
+## 🧠 Concurrency Handling
 
 To ensure consistency and avoid race conditions when multiple users place bids at the same time:
 
+#### 💡 Ideas:
+- **Message Queue**:
+  - Integrate a message queue where each bid is placed with its epoch timestamp by client-side. 
+  - These bids will be eventually be consumed by the backend at its own leisure to minimize CPU utilization (e.g. chunk_size=100).
+  - Each bid will be processed in the increasing order of their timestamps to ensure first come first serve principle.
+  - Invalid bids will be discarded based on highest bid & auction time validations.
+  - **FLAWS:** Our system requires user-friendly & meaningful error messages which will not be possible since the client-side will successfully push the bid onto the queue but it will be validated at a later time. In this case, it will require integration of push notifications to inform the user of their discarded bids.
+  - **DECISION**: Due to small number of users (100 in our case), we do not expect a large number of concurrent bids on the same item. Therefore, the integration of distributed message queue & push notifications can be done later as part of a scaling activity.
+
+- **Serial Transactions**:
+  - Set `SERIALIZABLE` isolation level on transactions to optimistically execute transactions concurrently and rollback one or all transactions based on conflicts.
+  - **FLAWS:** Running all transactions concurrently with optimism means that CPU will be utilized at its full and chances of conflicts are high since we need to validate current bid's amount with the latest bid's amount that will change with every new bid being committed against an item.
+  - **DECISION**: Due to high CPU utilization & need of implementing a retry mechanism for large number of rolled back transactions (not handled by typeorm), this design was discarded.
+
+- Read 
+- Set `READ COMMITTED` isolation level on transactions to ensure transactions read only committed data for validating that the 
 - Acquires a **pessimistic write lock** on the `Item` row during bid placement
 - Ensures only one bid transaction can be processed at a time per item
 - Other transactions wait for the lock to release
 
 ---
 
-## 🔄 Real-Time Bid Updates
+<!-- ## 🔄 Real-Time Bid Updates
 
 - Implemented using **Server-Sent Events (SSE)**
 - Frontend keeps an open connection to receive latest bid updates for individual auctions
@@ -114,7 +130,7 @@ cd backend
 cp .env.example .env
 npm install
 docker compose up
-npm run start:dev # Migrations will run automatically on server startup
+npm run start:dev # Migrations will run automatically on server spin up
 ```
 
 ### Frontend Setup
