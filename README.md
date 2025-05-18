@@ -4,6 +4,35 @@ A real-time auction platform where users can place bids on items and view live u
 
 ---
 
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js
+- Docker Desktop
+- MySQL
+- npm
+
+### Backend Setup
+
+```bash
+cd backend
+cp .env.example .env
+npm install
+docker compose up
+npm run start:dev # Migrations will run automatically on server spin up
+```
+
+### Frontend Setup
+```bash
+cd frontend
+cp .env.example .env
+npm install
+npm run dev
+```
+
+---
+
 ## 🧱 Tech Stack
 
 ### Frontend
@@ -105,8 +134,6 @@ To ensure consistency and avoid race conditions when multiple users place bids a
   - Other transactions concerned with the same item will wait for the lock to be released.
   - **DECISION:** This strategy allows bids to be placed on DIFFERENT items simultaneously and reduces the chances of rollbacks. It also minimizes CPU utilization by making the transactions wait for the lock to be released instead of executing them optimistically. Due to reduced chances of conflicts, we also don't need to implement a retry mechanism for V1.
 
----
-
 <!-- ## 🔄 Real-Time Bid Updates
 
 - Implemented using **Server-Sent Events (SSE)**
@@ -114,33 +141,3 @@ To ensure consistency and avoid race conditions when multiple users place bids a
 - Backend publishes latest bids on the SSE stream whenever a new valid bid is placed
 
 --- -->
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js
-- Docker Desktop
-- MySQL
-- npm
-
-### Backend Setup
-
-```bash
-cd backend
-cp .env.example .env
-npm install
-docker compose up
-npm run start:dev # Migrations will run automatically on server spin up
-```
-
-### Frontend Setup
-```bash
-cd frontend
-cp .env.example .env
-npm install
-npm run dev
-```
-
-
-
