@@ -141,7 +141,7 @@ To ensure consistency and avoid race conditions when multiple users place bids a
 To push updates to all users about the latest-bid placed in real time:
 
 ### 💡 Ideas:
-- **Pub/Sub Queue:**
+- **Pub/Sub Queue & Streams:**
   - Integrate a pub/sub or stream queue like MQTT or Redis Pub/Sub or Streams.
   - Server pushes latest bid against each item after committing new bids.
   - Client subscribes to the relevant topic and pulls latest bid information on every new message.
