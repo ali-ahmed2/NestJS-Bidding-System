@@ -9,9 +9,9 @@ A real-time auction platform where users can place bids on items and view live u
 ### Frontend
 - **ReactJS** (with Vite)
 - Styled using **Tailwind CSS**
-- Antd for form fields & toast messages
-- React query & mutations for CRUD & minimalistic global state management
-- React hook form for form state & error handling
+- **Antd** for form fields & toast messages
+- **React Query & Mutation** for CRUD & minimalistic global state management
+- **React Hook Form** for form state & error handling
 - Real-time bid updates via **Server-Sent Events (SSE)**
 
 ### Backend
